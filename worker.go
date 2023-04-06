@@ -24,6 +24,7 @@ type WorkerSpec struct {
 	period  time.Duration
 	count   uint
 	minWait uint
+	ipv6    uint
 }
 
 type Worker struct {
@@ -37,6 +38,7 @@ func NewWorker(spec WorkerSpec) *Worker {
 	// initialize defaults
 	spec.count = opts.Count
 	spec.minWait = defaultMinWait
+	spec.ipv6 = opts.IPv6
 
 	// if the period is very short, shorten as well minWait
 	if spec.period < 15*time.Second {
@@ -88,6 +90,8 @@ func (w *Worker) cycleRun(sleepTime time.Duration) {
 		strconv.FormatUint(uint64(w.spec.count), 10),
 		"-i", // min-wait
 		strconv.FormatUint(uint64(w.spec.minWait), 10),
+		"-6", // IPv6
+		strconv.FormatUint(uint64(w.spec.ipv6), 10),
 	}
 	for _, t := range w.targets {
 		fpingArgs = append(fpingArgs, t.spec.host)
